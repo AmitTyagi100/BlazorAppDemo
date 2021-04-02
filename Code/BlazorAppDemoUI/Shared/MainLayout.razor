@@ -1,0 +1,77 @@
+﻿@using BlazorAppDemo.Data
+@inherits LayoutComponentBase
+
+
+
+@inject NavigationManager NavigationManager
+@inject AuthenticationStateProvider AuthenticationStateProvider
+
+ 
+@using Blazored.LocalStorage
+@using System.Security.Claims
+ 
+@inject ILocalStorageService localStorageService
+@inject IAuthorizationService authorizationService
+
+<div class="page">
+	<div class="sidebar">
+		<NavMenu />
+	</div>
+
+	<div class="main">
+		<div class="top-row px-4">
+			<AuthorizeView>
+				<Authorized>
+					<div class="col-4">
+						<SelectLanguage />
+					</div>
+
+					<div class="col-8">
+						@if (IsUserAuthenticated)
+						{
+						<a class="float-right" style="line-height: 35px;" href="/" @onclick="(() => Logout())">Logout</a><h3 class="float-right">Welcome <b>@user.Identity.Name</b> </h3> 
+
+
+						}
+						</div>
+				</Authorized>
+				<NotAuthorized>
+					<a href="/">Login</a>
+				</NotAuthorized>
+			</AuthorizeView>
+		</div>
+
+		<div class="content px-4">
+			@Body
+		</div>
+	</div>
+</div>
+
+@code{
+	public async Task Logout()
+	{
+		await ((CustomAuthenticationStateProvider)AuthenticationStateProvider).MarkUserAsLoggedOut();
+		NavigationManager.NavigateTo("");
+	}
+}
+
+@code {
+
+	[CascadingParameter]
+	private Task<AuthenticationState> authenticationStateTask { get; set; }
+	ClaimsPrincipal user;
+
+	bool IsUserAuthenticated;
+
+ 
+
+	protected override async Task OnInitializedAsync()
+	{
+		user = (await authenticationStateTask).User;
+
+		if (user.Identity.IsAuthenticated)
+			IsUserAuthenticated = true;
+
+
+	}
+}

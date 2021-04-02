@@ -1,0 +1,61 @@
+﻿@using CrossCuttingEntities
+@using BlazorAppDemo.ApiConnect
+@inject IDepartmentData  departmentDataService
+<select class="form-control col-8" @onchange="OnChangeEvent">
+	@if (@departments != null)
+	{
+<option value="">Select Department..</option>
+				@foreach (var item in departments)
+				{
+
+					if (Value == item.DeptId.ToString())
+					{
+
+						<option selected value="@item.DeptId">@item.DeptName</option>
+					}
+					else
+					{
+						<option value="@item.DeptId">@item.DeptName</option>
+}
+
+				}}
+</select>
+
+@code { [Parameter]
+	public EventCallback<ChangeEventArgs> OnChangeEvent { get; set; }
+
+	public List<Department> departments { get; set; }
+
+	[Parameter]
+	public string  Value
+	{
+		get;
+		set;
+	}
+
+	[Parameter]
+	public EventCallback<string> ValueChanged
+	{
+		get;
+		set;
+	}
+	protected override async Task OnAfterRenderAsync(bool firstRender)
+	{
+		if (firstRender && departments == null)
+		{
+			try
+			{
+				var departmentlist = await departmentDataService.GetDepartments();
+				departments = departmentlist.ToList();
+
+			 
+				StateHasChanged();
+			}
+			catch (Exception)
+			{
+
+				//throw;
+			}
+
+		}
+	} }

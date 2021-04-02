@@ -1,0 +1,42 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+  </PropertyGroup>
+
+  <!--<ItemGroup>
+    <Content Remove="Pages\LoginPages\Login.razor" />
+  </ItemGroup>-->
+
+  <ItemGroup>
+    <!--<None Include="Pages\LoginPages\Login.razor" />-->
+    <None Include="UiLocalization\App.fr-FR.resx">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="UiLocalization\App.en-US.resx" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Blazored.LocalStorage" Version="3.0.0" />
+    <PackageReference Include="BlazorPro.Spinkit" Version="1.2.0" />
+    <PackageReference Include="EmbeddedBlazorContent" Version="1.10.0" />
+    <PackageReference Include="Microsoft.Extensions.Localization" Version="5.0.4" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="5.0.2" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\BalzorDemoRazorLibrary\BlazorDemoRazorLibrary.csproj" />
+    <ProjectReference Include="..\CrossCuttingEntities\CrossCuttingEntities.csproj" />
+    <ProjectReference Include="..\CrossCuttingUtility\CrossCuttingUtility.csproj" />
+  </ItemGroup>
+
+  <!--<ItemGroup>
+    <UpToDateCheckInput Remove="Pages\LoginPages\Login.razor" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="Pages\LoginPages\Login.razor" />
+  </ItemGroup>-->
+
+</Project>

@@ -1,0 +1,361 @@
+﻿@page "/userlist"
+
+@using BlazorAppDemo.Data
+@using BlazorAppDemo.ApiConnect
+@using BlazorDemoRazorLibrary
+@using Blazored.LocalStorage
+@using BlazorAppDemo.Shared
+@using CrossCuttingEntities
+@using BlazorAppDemo.Data
+
+@inject IAPIServices<UserInfo> userAPIService
+@inject IUserData userService
+@inject ILocalStorageService localStorageService
+@inject IJSRuntime JSRuntime
+@*@implements IDisposable*@
+
+
+<div class="col-12">
+	<h3><b>Add / Update User Information</b></h3>
+	<hr />
+
+	<ServerValidations IsVisible="IsVisible" Result="Result">
+		@RecordName
+	</ServerValidations>
+
+	<EditForm Model="@userInfo" OnValidSubmit="@SaveUser">
+		@*<DataAnnotationsValidator />*@
+
+		<div class="col-12 row">
+			<label class="col-4 font-weight-bold">First Name :</label>
+			<input @ref="firstNameTextBox" class="form-control col-8" @bind="userInfo.FirstName" placeholder="first name" />
+			&nbsp;<ValidationMessage For="@(() => userInfo.FirstName)" />
+		</div>
+		<br />
+		<div class="col-12 row">
+			<label class="col-4 font-weight-bold">Last Name :</label>
+			<InputText class="form-control col-8" @bind-Value="userInfo.LastName" placeholder="last name" />
+			&nbsp;<ValidationMessage For="@(() => userInfo.LastName)" />
+		</div>
+		<br />
+		<div class="col-12 row">
+			<label class="col-4 font-weight-bold">Department :</label>
+			<SelectDepartment OnChangeEvent="OnSelectDepartmentChange" @bind-Value="@SelectedDeptEdit"></SelectDepartment>
+		</div>
+		<br />
+		<div class="col-12 row">
+			<label class="col-4 font-weight-bold">Email Address :</label>
+			<InputText class="form-control col-8" @bind-Value="userInfo.EmailAddress" placeholder="email address" />
+			&nbsp;<ValidationMessage For="@(() => userInfo.EmailAddress)" />
+		</div>
+		<br />
+		<div class="col-12 row">
+			<span class="col-10"></span>
+			<input type="submit" class="form-control col-3 btn btn-primary" value="Save" />
+			@*<span>&nbsp;</span>
+				<input type="submit" class="form-control col-3 btn btn-primary" value="Clear" />*@
+		</div>
+	</EditForm>
+</div>
+<br />
+
+
+<div class="col-12">
+
+	<h3><b>Users</b></h3>
+	<SpinLoader IsLoading="isLoading">
+		<LoadingTemplate>
+			<div class="col-12" style="background-color: lightgray; height:400px; vertical-align:middle">
+				<br /><br />
+				<Chase Center="true" Color="#c21f13" Size="70px"></Chase>
+			</div>
+		</LoadingTemplate>
+		<ContentTemplate>
+			@if (filteredUserInfoList != null)
+			{
+				<GridView Items="filteredUserInfoList" ReloadList="IsGridViewFiltered">
+					<GridColumns>
+						<GridColumn ColumnTitle="Email Address"
+									OnSearchTextChanged="@(e => OnUserSearchTextChanged(e, "EmailAddress"))"></GridColumn>
+						<GridColumn ColumnTitle="First Name"
+									OnSearchTextChanged="@(e => OnUserSearchTextChanged(e, "FirstName"))"></GridColumn>
+						<GridColumn ColumnTitle="Last Name"
+									OnSearchTextChanged="@(e => OnUserSearchTextChanged(e, "LastName"))"></GridColumn>
+						<GridColumn ColumnTitle="Department"
+									OnSearchTextChanged="@(e => OnUserSearchTextChanged(e, "Department"))"></GridColumn>
+
+						<GridColumn ColumnTitle="Is Active"
+									OnSearchTextChanged="@(e => OnUserSearchTextChanged(e, "IsActive"))"></GridColumn>
+
+					</GridColumns>
+					<GridRow Context="userInfo">
+						<td>
+
+							@userInfo.EmailAddress
+
+						</td>
+						<td>@userInfo.FirstName</td>
+						<td>@userInfo.LastName</td>
+						<td>
+							@(@userInfo.UserDepartment ==null?"": userInfo.UserDepartment.DeptName)
+						</td>
+						<td>@GetIsActiveText(userInfo.IsActive.GetValueOrDefault())
+							@*@(@userInfo.IsActive ==null?false: @userInfo.IsActive==true?true:false)*@
+
+						</td>
+
+						<th style="min-width:70px">
+							<a style="text-underline-position:below; cursor:pointer; color:blue" @onclick="(() => EditUser(userInfo))">
+								<i class="fa fa-pencil" aria-hidden="true"></i>
+							</a>
+							|
+							<a style="text-underline-position:below; cursor:pointer; color:blue" @onclick="(() => DeleteUser(userInfo.UserId.GetValueOrDefault()))">
+								<i class="fa fa-trash" aria-hidden="true"></i>
+							</a>
+						</th>
+
+					</GridRow>
+				</GridView>
+			}
+		</ContentTemplate>
+	</SpinLoader>
+</div>
+
+@code {
+
+	//public User user { get; set; }
+	//public List<User> users { get; set; }
+
+	//public List<User> filteredUserList { get; set; }
+
+	public string SelectedDeptEdit { get; set; }
+
+	public UserInfo userInfo { get; set; }
+	public List<UserInfo> usersInfo { get; set; }
+
+	public List<UserInfo> filteredUserInfoList { get; set; }
+
+	public bool IsVisible { get; set; }
+	public bool Result { get; set; }
+	public string RecordName { get; set; }
+
+	bool isLoading = true;
+	public bool IsGridViewFiltered { get; set; }
+
+
+
+	public short SelectedDepartmentID { get; set; }
+	public string SelectedDepartmentName { get; set; }
+
+	ElementReference firstNameTextBox;
+
+	protected override void OnInitialized()
+	{
+		Console.WriteLine("Users - OnInitialized");
+		base.OnInitialized();
+	}
+
+	protected override async Task OnInitializedAsync()
+	{
+		Console.WriteLine("Users - OnInitializedAsync");
+
+		userInfo = new UserInfo();
+		usersInfo = new List<UserInfo>();
+
+
+		await base.OnInitializedAsync();
+	}
+
+	protected override void OnParametersSet()
+	{
+		Console.WriteLine("Users - OnParametersSet");
+		base.OnParametersSet();
+	}
+
+	protected override async Task OnParametersSetAsync()
+	{
+		Console.WriteLine("Users - OnParametersSetAsync");
+		await base.OnParametersSetAsync();
+	}
+
+	protected override bool ShouldRender()
+	{
+		base.ShouldRender();
+		Console.WriteLine("Users - ShouldRender");
+
+		return true;
+	}
+
+	protected override void OnAfterRender(bool firstRender)
+	{
+		Console.WriteLine("Users - OnAfterRender - firstRender = " + firstRender);
+		base.OnAfterRender(firstRender);
+	}
+
+	protected override async Task OnAfterRenderAsync(bool firstRender)
+	{
+		Console.WriteLine("Users - OnAfterRenderAsync - firstRender = " + firstRender);
+
+		if (firstRender)
+		{
+			await LoadUsers();
+
+			isLoading = false;
+			StateHasChanged();
+		}
+
+		await base.OnAfterRenderAsync(firstRender);
+	}
+
+	public void Dispose()
+	{
+		Console.WriteLine("Users - Dispose");
+	}
+
+	private string GetIsActiveText(bool isActive)
+	{
+
+		if (isActive)
+			return "True";
+		else
+			return "Flase";
+
+	}
+
+	private async Task LoadUsers()
+	{
+		await Task.Delay(500);
+
+		usersInfo = filteredUserInfoList = await userAPIService.GetAllAsync("UserInfo");
+
+		if (usersInfo == null)
+		{
+			RefreshTokenRequest refreshTokenRequest = new RefreshTokenRequest();
+			refreshTokenRequest.AccessToken = await localStorageService.GetItemAsync<string>("accessToken");
+			refreshTokenRequest.RefreshToken = await localStorageService.GetItemAsync<string>("refreshToken");
+
+			var user1 = await userService.RefreshTokenAsync(refreshTokenRequest);
+			await localStorageService.SetItemAsync("accessToken", user1.AccessToken);
+
+			usersInfo = filteredUserInfoList = await userAPIService.GetAllAsync("UserInfo");
+		}
+
+
+		StateHasChanged();
+	}
+
+
+
+
+
+
+	private async Task SaveUser()
+	{
+		userInfo.DeptId = SelectedDepartmentID;
+
+		if (userInfo.UserDepartment != null)
+		{
+			userInfo.UserDepartment = new Department() { DeptId = SelectedDepartmentID, DeptName = "-" };
+
+		}
+		else
+		{
+			userInfo.UserDepartment.DeptId = SelectedDepartmentID;
+			userInfo.UserDepartment.DeptName = "-";
+		}
+
+		//if (user.UserId == 0)
+		//	await userAPIService.SaveAsync("authors/CreateAuthor", user);
+		//else
+		//	await userAPIService.UpdateAsync("authors/UpdateAuthor", author.AuthorId, author);
+
+
+		await userAPIService.UpdateAsync("UserInfo", userInfo.UserId.GetValueOrDefault(), userInfo);
+
+		await LoadUsers();
+
+		Result = true;
+		IsVisible = true;
+
+		var firstName = userInfo.FirstName;
+		var lastName = userInfo.LastName;
+
+		RecordName = firstName + " " + lastName;
+
+		userInfo = new UserInfo();
+
+		//await JSRuntime.InvokeVoidAsync("saveMessage", firstName, lastName);
+		await JSRuntime.InvokeVoidAsync("setFocusOnElement", firstNameTextBox);
+	}
+
+	private async Task DeleteUser(int userId)
+	{
+		await userAPIService.DeleteAsync("Users", userId);
+		await LoadUsers();
+
+		//throw new Exception("DeleteAuthor");
+	}
+
+	private void EditUser(UserInfo argUserInfo)
+	{
+		userInfo = argUserInfo;
+
+		SelectedDeptEdit = userInfo.UserDepartment == null ? "" : userInfo.UserDepartment.DeptId.ToString();
+
+	}
+
+	private void OnSelectDepartmentChange(ChangeEventArgs changeEventArgs)
+	{
+		SelectedDepartmentID = Convert.ToInt16(changeEventArgs.Value);
+		SelectedDepartmentName = changeEventArgs.ToString();
+
+
+
+
+	}
+
+
+	private void OnUserSearchTextChanged(ChangeEventArgs changeEventArgs, string columnTitle)
+	{
+		string searchText = changeEventArgs.Value.ToString();
+		IsGridViewFiltered = true;
+
+		switch (columnTitle)
+		{
+
+			case "FirstName":
+				filteredUserInfoList = usersInfo.Where(U => U.FirstName.ToLower().Contains(searchText)).ToList();
+				break;
+			case "LastName":
+				filteredUserInfoList = usersInfo.Where(U => U.LastName.ToLower().Contains(searchText)).ToList();
+				break;
+			case "Department":
+				filteredUserInfoList = usersInfo.Where(U => U.UserDepartment.DeptName.ToLower().Contains(searchText)).ToList();
+				break;
+			case "EmailAddress":
+				filteredUserInfoList = usersInfo.Where(U => U.EmailAddress.ToLower().Contains(searchText)).ToList();
+				break;
+			case "IsActive":
+				filteredUserInfoList = usersInfo.Where(U => U.IsActive == ConvertSearchTextToBool(searchText)).ToList();
+				break;
+			default:
+				Console.WriteLine("Default case");
+				break;
+		}
+	}
+	private bool? ConvertSearchTextToBool(string searchText) {
+
+		bool result = false;
+		if (searchText.ToLower() == "1" || searchText.ToLower() == "yes")
+		{ searchText = "true"; }
+
+
+		if (bool.TryParse(searchText,out result)) {
+			return result;
+		}
+		return result;
+
+
+	}
+
+}
