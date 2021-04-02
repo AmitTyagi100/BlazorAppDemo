@@ -12,8 +12,8 @@ In This Application we used below compnents
 
 1. Azure App Service Plan
 2. Azure Web App / App Service
-  -    Application UI layer
-  -    Application API layer
+   1. Application UI layer
+   2. Application API layer
 3. App Service logs
 4. Azure Monitor Log Analytics
 5. Azure Alerts
@@ -35,11 +35,14 @@ In This Application we used below compnents
    1. Asp. net Core Web API
    2. JWT Token Authentication
    3. Entity Framework Core 
-3. Web UI layer
+3. Add CrossCutting Entities and Utility Project 
+   1. CrossCuttingEntities
+   2. CrossCuttingUtility
+4. Web UI layer
    1. Blazor Framework
    2. Multilingual
    3. Bootstrap responsive UI 
-4. Azure
+5. Azure
    1. App Service Plan
    2. Azure Web App / App Service
    3. App Service logs
@@ -76,4 +79,99 @@ We will add three API controllers in API project for all three tables in DB
 
 ![Coltorllers](SupportingFiles/API%203%20Controller.png)
 
-You can refer the code of all three contorllers [here](Code/BlazorDemoAPI/Contorllers/) 
+You can refer the code of all three [contorllers](https://github.com/AmitTyagi100/BlazorAppDemo/tree/main/Code/BlazorDemoAPI/Controllers) 
+
+We will use JWT token for API authntication, to use JWT in API layer we will add a Nuget package.
+
+**Microsoft.AspNetCore.Authentication.JwtBearer**
+
+![JwtBearer](SupportingFiles/JwtBearer.png)
+
+and we need to do below code change in Statrup.cs > ConfigureServices method , Configure method and add "SecretKey" in appsettings.json 
+**ConfigureServices**
+
+```c#
+          var jwtSection = Configuration.GetSection("JWTSettings");
+            services.Configure<JWTSettings>(jwtSection);
+
+            //to validate the token which has been sent by clients
+            var appSettings = jwtSection.Get<JWTSettings>();
+            var key = Encoding.ASCII.GetBytes(appSettings.SecretKey);
+
+            services.AddAuthentication(x =>
+            {
+                x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(x =>
+            {
+                x.RequireHttpsMetadata = true;
+                x.SaveToken = true;
+                x.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(key),
+                    ValidateIssuer = false,
+                    ValidateAudience = false,
+                    ClockSkew = TimeSpan.Zero
+                };
+            });
+```
+
+**Configure**
+```c#
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        {
+            if (env.IsDevelopment())
+            {
+                app.UseDeveloperExceptionPage();
+                app.UseSwagger();
+                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "BlazorDemoAPI v1"));
+            }
+
+            app.UseHttpsRedirection();
+
+            app.UseRouting();
+
+            app.UseAuthentication();
+            app.UseAuthorization();
+
+
+           
+
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers();
+            });
+        }
+```
+
+**appsettings**
+
+```json
+"JWTSettings": {
+    "SecretKey": "thisisasecretkeyForBlazorDemo"
+  }
+  ```
+
+**Part 3**
+
+Now we will add CrossCuttingEntities those will be used in both layer(i.e API layer & UI layer) 
+This project will a Class library that will have all the models/entities
+
+![CrossCuttingEntities](SupportingFiles/CrossCuttingEntities.png)
+
+You can refer the code for all entities [here](https://github.com/AmitTyagi100/BlazorAppDemo/tree/main/Code/CrossCuttingEntities)
+
+next  Cross Cutting project also be a class library "CrossCuttingUtility"
+this project will have our password encription logic.
+
+![CrossCuttingUtility](SupportingFiles/CrossCuttingUtility.png)
+
+
+You can refer the code [here](https://github.com/AmitTyagi100/BlazorAppDemo/tree/main/Code/CrossCuttingUtility)
+
+
+
+
+
