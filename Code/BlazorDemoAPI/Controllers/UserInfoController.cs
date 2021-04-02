@@ -7,9 +7,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using BlazorDemoAPI.Models;
 using CrossCuttingEntities;
+using Microsoft.AspNetCore.Authorization;
 
 namespace BlazorDemoAPI.Controllers
 {
+	[Authorize]
 	[Route("api/[controller]")]
 	[ApiController]
 	public class UserInfoController : ControllerBase
@@ -23,6 +25,7 @@ namespace BlazorDemoAPI.Controllers
 
 		// GET: api/UserInfo
 		[HttpGet]
+		 
 		public async Task<ActionResult<IEnumerable<UserInfo>>> GettblUserInfo()
 		{
 			//return await _context.tblUserInfo.ToListAsync();

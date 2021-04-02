@@ -88,7 +88,7 @@ namespace BlazorDemoAPI
             app.UseAuthorization();
 
 
-           // app.UseAuthorization();
+           
 
             app.UseEndpoints(endpoints =>
             {
