@@ -65,7 +65,7 @@ In This Application, we used below components
  
  ![DB Schema](SupportingFiles/DBSchema.png)
  
- You can refer DB script [here](Code/BlazorAppDemoUI/wwwroot/img/BlazorAppDemo-architectures.jpg)
+ You can refer DB script [here](Code\DatabaseScript\BlazorDemoAppDB.sql)
  
  **Part 2**
  To connect with DB and expose as API we will use the .Net Web API template
@@ -78,7 +78,7 @@ We will add three API controllers in the API project for all three tables in DB
  
 ![Coltorllers](SupportingFiles/API%203%20Controller.png)
  
-You can refer the code of all three [contorllers](https://github.com/AmitTyagi100/BlazorAppDemo/tree/main/Code/BlazorDemoAPI/Controllers){:target="_blank"}
+You can refer the code of all three [contorllers](https://github.com/AmitTyagi100/BlazorAppDemo/tree/main/Code/BlazorDemoAPI/Controllers)
  
 We will use the JWT token for API authentication, to use JWT in the API layer we will add a Nuget package.
  
@@ -339,7 +339,7 @@ Please refer full code [here](https://github.com/AmitTyagi100/BlazorAppDemo/tree
  
 Publish API layer via Visual Studio
  
-![PublishAPI](SupportingFiles/PublishAPI.png)
+![PublishAPI](SupportingFiles/PublishApi.png)
  
 Skip the API Management configuration
  
