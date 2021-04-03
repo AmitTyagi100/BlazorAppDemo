@@ -25,7 +25,7 @@ In This Application, we used below components
 11. Entity Framework Core
  
  
-# I divided this application into 4 parts.
+# I divided this application into 5 parts.
  
 1. **Database**
    1. Database first approach
