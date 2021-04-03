@@ -65,7 +65,7 @@ In This Application, we used below components
  
  ![DB Schema](SupportingFiles/DBSchema.png)
  
- You can refer DB script [here](Code\DatabaseScript\BlazorDemoAppDB.sql)
+ You can refer DB script [here](Code/DatabaseScript/BlazorDemoAppDB.sql)
  
  **Part 2**
  To connect with DB and expose as API we will use the .Net Web API template
