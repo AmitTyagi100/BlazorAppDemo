@@ -1,7 +1,7 @@
 # BlazorApp
 **Production-ready Blazor Application (Server)**
  
-Purpose of this app to create a production-ready base template for a Web App.
+Purpose of this app to create a production-ready base structure for a Web App.
  
 The high-level architecture will be as below. 
  
@@ -18,38 +18,36 @@ In This Application, we used below components
 4. Azure Monitor Log Analytics
 5. Azure Alerts
 6. Azure SQL Database
-7. Azure Application Insights
-8. Azure SendGrid 
-9. Visual Studio 2019
-10. .Net Core 5
-11. Blazor Framework
-12. Entity Framework Core
+7. Azure SendGrid 
+8. Visual Studio 2019
+9. .Net Core 5
+10. Blazor Framework
+11. Entity Framework Core
  
  
 # I divided this application into 4 parts.
  
-1. Database
+1. **Database**
    1. Database first approach
    2. Azure SQL Database
-2. API layer
+2. **API layer**
    1. Asp. net Core Web API
    2. JWT Token Authentication
    3. Entity Framework Core 
-3. Add CrossCutting Entities and Utility Project 
+3. **Add CrossCutting Entities and Utility Project** 
    1. CrossCuttingEntities
    2. CrossCuttingUtility
-4. Web UI layer
+4. **Web UI layer**
    1. Blazor Framework
    2. Multilingual
    3. Bootstrap responsive UI 
-5. Azure
+5. **Azure**
    1. App Service Plan
    2. Azure Web App / App Service
    3. App Service logs
    4. Azure Monitor Log Analytics
    5. Azure Alerts
-   6. Azure Application Insights
-   7. Azure SendGrid
+   6. Azure SendGrid
  
  #  Lets Build the application 
 **Part 1**
