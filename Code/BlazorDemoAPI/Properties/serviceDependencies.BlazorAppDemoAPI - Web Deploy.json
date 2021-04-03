@@ -1,0 +1,16 @@
+{
+  "dependencies": {
+    "secrets1": {
+      "resourceId": "/subscriptions/[parameters('subscriptionId')]/resourceGroups/[parameters('resourceGroupName')]/providers/Microsoft.KeyVault/vaults/BlazorDemoKeyVault",
+      "type": "secrets.keyVault",
+      "connectionId": "VaultUriApi",
+      "secretStore": "AzureAppSettings"
+    },
+    "mssql1": {
+      "resourceId": "/subscriptions/[parameters('subscriptionId')]/resourceGroups/[parameters('resourceGroupName')]/providers/Microsoft.Sql/servers/sqlserverblazor/databases/BlazorDemo",
+      "type": "mssql.azure",
+      "connectionId": "BlazorDemoSqlConnectionString",
+      "secretStore": "AzureKeyVault"
+    }
+  }
+}

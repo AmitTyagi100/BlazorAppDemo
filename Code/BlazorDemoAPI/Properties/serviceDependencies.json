@@ -1,0 +1,12 @@
+{
+  "dependencies": {
+    "secrets1": {
+      "type": "secrets",
+      "connectionId": "VaultUriApi"
+    },
+    "mssql1": {
+      "type": "mssql",
+      "connectionId": "BlazorDemoSqlConnectionString"
+    }
+  }
+}

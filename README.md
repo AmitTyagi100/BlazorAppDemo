@@ -335,6 +335,49 @@ Please refer full code [here](https://github.com/AmitTyagi100/BlazorAppDemo/tree
 3. Configure Azure SendGrid
 4. Configure Alerts, logs, Log Analytics, and application insights for both App services. 
 
+**Create two Web Apps **
+
+![WebApp](SupportingFiles/Create%20WebApp.png)
+
+Publish API layer via Visual Studio
+
+![PublishAPI](SupportingFiles/PublishAPI.png)
+
+Skip the API Management configuretion
+
+![API Management](SupportingFiles/ByPassApiManagment.png)
+
+Publish with PubXML file 
+
+![API Management](SupportingFiles/UsePubXML.png)
+
+Next screen will br Publish Summery screen, in Last of this screen you will see Database configuretion option 
+Click Configuretion link
+
+![API Management](SupportingFiles/DbConfiguretion.png)
+
+![API Management](SupportingFiles/DbConfiguretion2.png)
+
+For Database connection string use Azure Key-Vault... In last you will see summary screen with chnages in your project. Please click Finish.
+
+![API Management](SupportingFiles/DbConfiguretion3.png)
+
+Similar steps are require for UI Layer except than Database setting.
+
+**Note** *Please update API URL in Appsetting in UI Layer before publish*
+
+# Final Output
+
+![API Management](SupportingFiles/UIOnline.png)
+
+![API Management](SupportingFiles/UIOnline1.png)
+
+![API Management](SupportingFiles/UIOnline2.png)
+
+![API Management](SupportingFiles/UIOnline3.png)
+
+
+
 
 
 
