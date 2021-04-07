@@ -1,7 +1,7 @@
 # BlazorApp
 **Production-ready Blazor Application (Server)**
  
-Purpose of this app to create a production-ready base structure for a Web App.
+Purpose of this app to create a production-ready base structure / Template for a Blazor Server application using Azure resources.
  
 The high-level architecture will be as below. 
  
